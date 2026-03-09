@@ -1,0 +1,11 @@
+﻿{
+  "solution": {
+    "path": "PamelloV7.Experiments.sln",
+    "projects": [
+      "PamelloV7.Experiments.Desktop\\PamelloV7.Experiments.Desktop.csproj",
+      "PamelloV7.Experiments.Game\\PamelloV7.Experiments.Game.csproj",
+      "PamelloV7.Experiments.Game.Tests\\PamelloV7.Experiments.Game.Tests.csproj",
+      "PamelloV7.Experiments.Resources\\PamelloV7.Experiments.Resources.csproj"
+    ]
+  }
+}
