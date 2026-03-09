@@ -11,8 +11,7 @@ public partial class MainScreen : Screen
 {
     [BackgroundDependencyLoader]
     private void load() {
-        InternalChildren = new Drawable[]
-        {
+        InternalChildren = [
             new Box
             {
                 Colour = Color4.Violet,
@@ -24,12 +23,12 @@ public partial class MainScreen : Screen
                 Text = "Main Screen",
                 Anchor = Anchor.TopCentre,
                 Origin = Anchor.TopCentre,
-                Font = FontUsage.Default.With(size: 40)
+                Font = new FontUsage("Torus-Regular", 40)
             },
             new SpinningBox
             {
                 Anchor = Anchor.Centre,
             }
-        };
+        ];
     }
 }
