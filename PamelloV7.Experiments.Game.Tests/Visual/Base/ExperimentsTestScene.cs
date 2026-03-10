@@ -1,6 +1,6 @@
 using osu.Framework.Testing;
 
-namespace PamelloV7.Experiments.Game.Tests.Visual;
+namespace PamelloV7.Experiments.Game.Tests.Visual.Base;
 
 public abstract partial class ExperimentsTestScene : TestScene
 {

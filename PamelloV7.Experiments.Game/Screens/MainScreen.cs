@@ -5,7 +5,7 @@ using osu.Framework.Graphics.Sprites;
 using osu.Framework.Screens;
 using osuTK.Graphics;
 
-namespace PamelloV7.Experiments.Game;
+namespace PamelloV7.Experiments.Game.Screens;
 
 public partial class MainScreen : Screen
 {

@@ -1,6 +1,8 @@
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
 using NUnit.Framework;
+using PamelloV7.Experiments.Game.Screens;
+using PamelloV7.Experiments.Game.Tests.Visual.Base;
 
 namespace PamelloV7.Experiments.Game.Tests.Visual;
 

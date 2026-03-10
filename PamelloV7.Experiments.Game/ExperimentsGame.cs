@@ -1,6 +1,7 @@
 ﻿using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
+using PamelloV7.Experiments.Game.Screens;
 
 namespace PamelloV7.Experiments.Game;
 
