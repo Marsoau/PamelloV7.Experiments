@@ -7,7 +7,7 @@ using osuTK.Graphics;
 
 namespace PamelloV7.Experiments.Game.Screens;
 
-public partial class MainScreen : Screen
+public partial class DefaultScreen : Screen
 {
     [BackgroundDependencyLoader]
     private void load() {
@@ -23,7 +23,7 @@ public partial class MainScreen : Screen
                 Text = "Main Screen",
                 Anchor = Anchor.TopCentre,
                 Origin = Anchor.TopCentre,
-                Font = new FontUsage("Torus-Regular", 40)
+                Font = FontUsage.Default.With(size: 40),
             },
             new SpinningBox
             {
