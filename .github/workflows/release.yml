@@ -5,6 +5,9 @@ on:
     tags:
       - '*'
 
+permissions:
+  contents: write
+
 jobs:
   build-desktop:
     name: Build for ${{ matrix.target }}
