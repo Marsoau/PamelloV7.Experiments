@@ -1,0 +1,51 @@
+name: Build and Release Game
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-desktop:
+    name: Build for ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - target: Windows
+            os: windows-latest
+            rid: win-x64
+            archive_name: PamelloV7.Experiments-Windows.zip
+          - target: Linux
+            os: ubuntu-latest
+            rid: linux-x64
+            archive_name: PamelloV7.Experiments-Linux.zip
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Publish App
+        run: dotnet publish PamelloV7.Experiments.Desktop/PamelloV7.Experiments.Desktop.csproj -c Release -r ${{ matrix.rid }} --self-contained true /p:Version=${{ github.ref_name }} -o ./publish
+
+      - name: Zip Output (Windows)
+        if: matrix.os == 'windows-latest'
+        run: Compress-Archive -Path ./publish/* -DestinationPath ${{ matrix.archive_name }}
+
+      - name: Zip Output (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd publish
+          zip -r ../${{ matrix.archive_name }} .
+          cd ..
+
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.archive_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}

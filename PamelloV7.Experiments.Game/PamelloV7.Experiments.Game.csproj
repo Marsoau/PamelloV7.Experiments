@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\PamelloV7.Experiments.Resources\PamelloV7.Experiments.Resources.csproj"/>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="PamelloV7.Wrapper" Version="2.3.1" />
         <PackageReference Include="ppy.osu.Framework" Version="2026.303.0"/>
     </ItemGroup>
 </Project>
