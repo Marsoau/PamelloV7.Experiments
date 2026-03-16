@@ -18,24 +18,43 @@ public partial class TestScenePamelloClientComponent : ExperimentsTestScene
 {
     private PamelloClientComponent pamello { get; set; } = new();
 
-    private FillFlowContainer container;
-
-    private Box box;
+    private readonly SpriteText isConnectedText;
+    private readonly SpriteText isAuthorizedText;
+    private readonly SpriteText userText;
+    private readonly SpriteText playerText;
+    private readonly SpriteText songText;
 
     public TestScenePamelloClientComponent()
     {
         Add(pamello);
 
-        container = new FillFlowContainer()
+        Add(new FillFlowContainer()
         {
             AutoSizeAxes = Axes.Both,
             Direction = FillDirection.Vertical,
             Spacing = new Vector2(0),
-        };
-
-        Add(container);
-
-        rerenderText();
+            Children =
+            [
+                isConnectedText = new SpriteText(),
+                isAuthorizedText = new SpriteText(),
+                userText = new SpriteText(),
+                playerText = new SpriteText(),
+                songText = new SpriteText()
+                {
+                    EllipsisString = "...",
+                    Truncate = true,
+                    MaxWidth = 400,
+                },
+                new BlackButton()
+                {
+                    Width = 200,
+                    Action = () => {
+                        pamello.Client.Commands.PlayerPauseToggle();
+                    },
+                    Text = "Toggle Pause",
+                }
+            ]
+        });
 
         pamello.IsConnected.BindValueChanged(_ => Scheduler.Add(rerenderText));
         pamello.IsAuthorized.BindValueChanged(_ => Scheduler.Add(rerenderText));
@@ -49,51 +68,37 @@ public partial class TestScenePamelloClientComponent : ExperimentsTestScene
             pamello.CurrentSong.Value,
         ]);
 
+        rerenderText();
+    }
+
+    [Test]
+    public void TestBegin()
+    {
         AddStep("Connect", () => pamello.Client.ConnectAsync("https://server.tpamello.marsoau.com"));
-        AddStep("Disconnect", () => pamello.Client.DisconnectAsync());
+        AddUntilStep("Wait Connected", () => pamello.IsConnected.Value);
+        AddAssert("Is Connected", () => pamello.IsConnected.Value);
         AddStep("Authorize", () => pamello.Client.AuthorizeAsync(Guid.Parse("9a40ad25-7e80-43c1-bdd9-a7a84218db5d")));
+        AddUntilStep("Wait Authorized", () => pamello.IsAuthorized.Value);
+        AddAssert("Is Authorized", () => pamello.IsAuthorized.Value);
+    }
+
+    [Test]
+    public void TestEnd()
+    {
         AddStep("Unauthorize", () => pamello.Client.UnauthorizeAsync());
+        AddStep("Disconnect", () => pamello.Client.DisconnectAsync());
+        AddAssert("Is Unauthorized", () => !pamello.IsAuthorized.Value);
+        AddAssert("Is Disconnected", () => !pamello.IsConnected.Value);
     }
 
     private void rerenderText()
     {
         //don't do that in actual code, better update drawables properties instead of drawables themselves
 
-        container.Clear();
-        container.Children =
-        [
-            new SpriteText()
-            {
-                Text = $"Is Connected: {pamello.IsConnected.Value}",
-            },
-            new SpriteText()
-            {
-                Text = $"Is Authorized: {pamello.IsAuthorized.Value}",
-            },
-            new SpriteText()
-            {
-                Text = $"User: {pamello.User.Value}",
-            },
-            new SpriteText()
-            {
-                Text = $"Player: {pamello.SelectedPlayer.Value} - {pamello.SelectedPlayer?.Value?.IsPaused} - {new AudioTime(pamello.SelectedPlayer.Value?.Queue.CurrentSongTimePassed ?? 0).ToShortString()}",
-            },
-            new SpriteText()
-            {
-                Text = $"Song: {pamello.CurrentSong.Value}",
-                EllipsisString = "...",
-                AllowMultiline = false,
-                Truncate = true,
-                MaxWidth = 400,
-            },
-            new BlackButton()
-            {
-                Width = 200,
-                Action = () => {
-                    pamello.Client.Commands.PlayerPauseToggle();
-                },
-                Text = "Toggle Pause",
-            }
-        ];
+        isConnectedText.Text = $"Is Connected: {pamello.IsConnected.Value}";
+        isAuthorizedText.Text = $"Is Authorized: {pamello.IsAuthorized.Value}";
+        userText.Text = $"User: {pamello.User.Value}";
+        playerText.Text = $"Player: {pamello.SelectedPlayer.Value} - {pamello.SelectedPlayer?.Value?.IsPaused} - {new AudioTime(pamello.SelectedPlayer.Value?.Queue.CurrentSongTimePassed ?? 0).ToShortString()}";
+        songText.Text = $"Song: {pamello.CurrentSong.Value}";
     }
 }
