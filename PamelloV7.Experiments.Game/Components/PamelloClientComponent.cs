@@ -11,19 +11,14 @@ public partial class PamelloClientComponent : Component
 {
     public PamelloClient Client { get; } = new();
 
-    public Bindable<bool> IsConnected { get; } = new(false);
-    public Bindable<bool> IsAuthorized { get; } = new(false);
+    public Bindable<EConnectionState> ConnectionState { get; } = new();
+
+    public BindableBool IsConnected { get; } = new();
+    public BindableBool IsAuthorized { get; } = new();
 
     public Bindable<RemoteUser> User { get; } = new();
     public Bindable<RemotePlayer> SelectedPlayer { get; } = new();
     public Bindable<RemoteSong> CurrentSong { get; } = new();
-
-    public PamelloClientComponent() {
-        IsAuthorized.BindValueChanged(isAuthorizedChanged);
-
-        User.BindValueChanged(v => Scheduler.Add(() => userChanged(v.NewValue)));
-        SelectedPlayer.BindValueChanged(v => Scheduler.Add(() => selectedPlayerChanged(v.NewValue)));
-    }
 
     private void isAuthorizedChanged(ValueChangedEvent<bool> e) {
         User.Value = Client.User;
@@ -59,15 +54,26 @@ public partial class PamelloClientComponent : Component
     protected override void LoadComplete() {
         base.LoadComplete();
 
-        Client.OnConnected += () => IsConnected.Value = true;
-        Client.OnDisconnected += () => IsConnected.Value = false;
+        IsAuthorized.BindValueChanged(isAuthorizedChanged);
 
-        Client.OnAuthorized += () => IsAuthorized.Value = true;
-        Client.OnUnauthorized += () => IsAuthorized.Value = false;
+        User.BindValueChanged(v => Scheduler.Add(() => userChanged(v.NewValue)));
+        SelectedPlayer.BindValueChanged(v => Scheduler.Add(() => selectedPlayerChanged(v.NewValue)));
+
+        Client.OnConnectionStateChanged += () => ConnectionState.Value = Client.ConnectionState;
+
+        Client.OnConnected += _ => IsConnected.Value = true;
+        Client.OnDisconnected += _ => IsConnected.Value = false;
+
+        Client.OnAuthorized += _ => IsAuthorized.Value = true;
+        Client.OnUnauthorized += _ => IsAuthorized.Value = false;
 
         Client.Events.Watch(() => {
             userChanged(User.Value);
         }, () => [User.Value]);
+
+        Client.Events.Watch(() => {
+            selectedPlayerChanged(SelectedPlayer.Value);
+        }, () => [SelectedPlayer.Value]);
     }
 
     protected override void Dispose(bool isDisposing) {

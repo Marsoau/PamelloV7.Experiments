@@ -25,10 +25,11 @@ public partial class BlackButton : Button
     }
 
     public BlackButton() {
+        Height = 30;
         AddInternal(container = new Container {
             Anchor = Anchor.Centre,
             Origin = Anchor.Centre,
-            AutoSizeAxes = Axes.Both,
+            RelativeSizeAxes = Axes.Both,
             CornerRadius = 10,
             Masking = true,
 
@@ -74,13 +75,13 @@ public partial class BlackButton : Button
 
     protected override bool OnMouseDown(MouseDownEvent e)
     {
-        Content.ScaleTo(0.9f, 2000, Easing.OutQuint);
+        container.ScaleTo(0.95f, 1000, Easing.OutQuint);
         return base.OnMouseDown(e);
     }
 
     protected override void OnMouseUp(MouseUpEvent e)
     {
-        Content.ScaleTo(1, 1000, Easing.OutElastic);
+        container.ScaleTo(1, 1000, Easing.OutElastic);
         base.OnMouseUp(e);
     }
 
