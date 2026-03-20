@@ -6,7 +6,7 @@
         <ProjectReference Include="..\PamelloV7.Experiments.Resources\PamelloV7.Experiments.Resources.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="PamelloV7.Wrapper" Version="2026.316.0-dev" />
-        <PackageReference Include="ppy.osu.Framework" Version="2026.303.0"/>
+        <PackageReference Include="PamelloV7.Wrapper" Version="2026.320.1-dev" />
+        <PackageReference Include="ppy.osu.Framework" Version="2026.318.0" />
     </ItemGroup>
 </Project>

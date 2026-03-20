@@ -4,6 +4,7 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using PamelloV7.Wrapper;
 using PamelloV7.Wrapper.Entities;
+using PamelloV7.Wrapper.Extensions;
 
 namespace PamelloV7.Experiments.Game.Components;
 
@@ -25,28 +26,28 @@ public partial class PamelloClientComponent : Component
     }
 
     private void userChanged([CanBeNull] RemoteUser user) {
-        if (user?.SelectedPlayerId == null) {
+        if (user is null || user.SelectedPlayer.Id == 0) {
             SelectedPlayer.Value = null;
             return;
         }
 
-        if (user.SelectedPlayerId == SelectedPlayer.Value?.Id) return;
+        if (user.SelectedPlayer.Id == (SelectedPlayer.Value?.Id ?? 0)) return;
 
-        Client.PEQL.GetSingleAsync<RemotePlayer>(user.SelectedPlayerId.Value).ContinueWith(t => {
+        user.SelectedPlayer.LoadAsync().ContinueWith(t => {
             SelectedPlayer.Value = t.Result;
         });
     }
 
     private void selectedPlayerChanged([CanBeNull] RemotePlayer player)
     {
-        if (player?.Queue.CurrentSongId == null) {
+        if (player is null || player.Queue.CurrentSong.Id == 0) {
             CurrentSong.Value = null;
             return;
         }
 
-        if (player.Queue.CurrentSongId == CurrentSong.Value?.Id) return;
+        if (player.Queue.CurrentSong.Id == (CurrentSong.Value?.Id ?? 0)) return;
 
-        Client.PEQL.GetSingleAsync<RemoteSong>(player.Queue.CurrentSongId.Value).ContinueWith(t => {
+        player.Queue.CurrentSong.LoadAsync().ContinueWith(t => {
             CurrentSong.Value = t.Result;
         });
     }
