@@ -21,11 +21,11 @@ public partial class PamelloClientComponent : Component
     public Bindable<RemotePlayer> SelectedPlayer { get; } = new();
     public Bindable<RemoteSong> CurrentSong { get; } = new();
 
-    private void isAuthorizedChanged(ValueChangedEvent<bool> e) {
+    private void IsAuthorizedChanged(ValueChangedEvent<bool> e) {
         User.Value = Client.User;
     }
 
-    private void userChanged([CanBeNull] RemoteUser user) {
+    private void UserChanged([CanBeNull] RemoteUser user) {
         if (user is null || user.SelectedPlayer.Id == 0) {
             SelectedPlayer.Value = null;
             return;
@@ -38,7 +38,7 @@ public partial class PamelloClientComponent : Component
         });
     }
 
-    private void selectedPlayerChanged([CanBeNull] RemotePlayer player)
+    private void SelectedPlayerChanged([CanBeNull] RemotePlayer player)
     {
         if (player is null || player.Queue.CurrentSong.Id == 0) {
             CurrentSong.Value = null;
@@ -55,10 +55,10 @@ public partial class PamelloClientComponent : Component
     protected override void LoadComplete() {
         base.LoadComplete();
 
-        IsAuthorized.BindValueChanged(isAuthorizedChanged);
+        IsAuthorized.BindValueChanged(IsAuthorizedChanged);
 
-        User.BindValueChanged(v => Scheduler.Add(() => userChanged(v.NewValue)));
-        SelectedPlayer.BindValueChanged(v => Scheduler.Add(() => selectedPlayerChanged(v.NewValue)));
+        User.BindValueChanged(v => Scheduler.Add(() => UserChanged(v.NewValue)));
+        SelectedPlayer.BindValueChanged(v => Scheduler.Add(() => SelectedPlayerChanged(v.NewValue)));
 
         Client.OnConnectionStateChanged += () => ConnectionState.Value = Client.ConnectionState;
 
@@ -69,11 +69,11 @@ public partial class PamelloClientComponent : Component
         Client.OnUnauthorized += _ => IsAuthorized.Value = false;
 
         Client.Events.Watch(() => {
-            userChanged(User.Value);
+            UserChanged(User.Value);
         }, () => [User.Value]);
 
         Client.Events.Watch(() => {
-            selectedPlayerChanged(SelectedPlayer.Value);
+            SelectedPlayerChanged(SelectedPlayer.Value);
         }, () => [SelectedPlayer.Value]);
     }
 

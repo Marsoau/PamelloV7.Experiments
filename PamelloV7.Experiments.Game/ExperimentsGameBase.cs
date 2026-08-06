@@ -26,7 +26,7 @@ public partial class ExperimentsGameBase : osu.Framework.Game
     }
 
     [BackgroundDependencyLoader]
-    private void load(FrameworkConfigManager config) {
+    private void Load(FrameworkConfigManager config) {
         Resources.AddStore(new DllResourceStore(typeof(ExperimentsResources).Assembly));
 
         AddFont(Resources, @"Fonts/Torus/Torus-Regular");

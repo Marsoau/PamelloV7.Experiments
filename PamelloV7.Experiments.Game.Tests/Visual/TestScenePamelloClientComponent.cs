@@ -74,7 +74,8 @@ public partial class TestScenePamelloClientComponent : ExperimentsTestScene
     [Test]
     public void TestBegin()
     {
-        AddStep("Connect", () => pamello.Client.ConnectAsync("https://server.tpamello.marsoau.com"));
+        //AddStep("Connect", () => pamello.Client.ConnectAsync("https://server.tpamello.marsoau.com"));
+        AddStep("Connect", () => pamello.Client.ConnectAsync("http://127.0.0.1:41630"));
         AddUntilStep("Wait Connected", () => pamello.IsConnected.Value);
         AddAssert("Is Connected", () => pamello.IsConnected.Value);
         AddStep("Authorize", () => pamello.Client.AuthorizeAsync(Guid.Parse("9a40ad25-7e80-43c1-bdd9-a7a84218db5d")));

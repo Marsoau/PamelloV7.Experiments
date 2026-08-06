@@ -17,7 +17,7 @@ public partial class SpinningBox : CompositeDrawable
     }
 
     [BackgroundDependencyLoader]
-    private void load(TextureStore textures) {
+    private void Load(TextureStore textures) {
         InternalChild = box = new Container
         {
             AutoSizeAxes = Axes.Both,
