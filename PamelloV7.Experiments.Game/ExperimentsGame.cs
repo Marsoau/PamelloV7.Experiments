@@ -19,6 +19,6 @@ public partial class ExperimentsGame : ExperimentsGameBase
     protected override void LoadComplete() {
         base.LoadComplete();
 
-        screenStack.Push(new DefaultScreen());
+        screenStack.Push(new PagodaStackScreen());
     }
 }
