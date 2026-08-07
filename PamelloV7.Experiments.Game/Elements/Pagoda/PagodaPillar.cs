@@ -13,9 +13,9 @@ public partial class PagodaPillar : CompositeDrawable
     private static Colour4 PillarBrown => Colour4.FromARGB(0xFF876649);
     private static Colour4 PillarYellow => Colour4.FromARGB(0xFFe6b64e);
 
-    private Box _basePillarBox;
+    private readonly Box _basePillarBox;
 
-    private const float StartHeight = 6;
+    public const float StartHeight = 6;
 
     public float BaseHeight {
         get => _basePillarBox.Height;

@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using NUnit.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -28,12 +33,11 @@ public partial class PagodaStackScreen : Screen
                 Origin = Anchor.TopCentre,
                 Font = FontUsage.Default.With(size: 40),
             },
-            new FillFlowContainer {
+            new Container() {
+                AutoSizeAxes = Axes.Both,
+                
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
-                
-                Spacing = new Vector2(40, 0),
-                Direction = FillDirection.Horizontal,
                 
                 Children = [
                     new PagodaPillar() {
@@ -42,20 +46,34 @@ public partial class PagodaStackScreen : Screen
                 
                         BaseHeight = 200,
                     },
-                    new PagodaPillar() {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
+                    new FillFlowContainer {
+                        AutoSizeAxes = Axes.Both,
+                        
+                        Anchor = Anchor.BottomCentre,
+                        Origin = Anchor.BottomCentre,
+                        
+                        Y = -(PagodaPillar.StartHeight + 4),
                 
-                        BaseHeight = 200,
-                    },
-                    new PagodaPillar() {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
+                        Spacing = new Vector2(0, 4),
+                        Direction = FillDirection.Vertical,
                 
-                        BaseHeight = 200,
+                        Children = GetGears().ToList(),
                     },
                 ]
-            }
+            },
         ];
+        
+        return;
+
+        IEnumerable<PagodaGear> GetGears() {
+            for (var i = 1; i <= 7; i++) {
+                yield return new PagodaGear {
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    
+                    SizeLevel = i,
+                };
+            }
+        }
     }
 }
