@@ -9,7 +9,4 @@
         <PackageReference Include="PamelloV7.Wrapper" Version="2026.320.1-dev" />
         <PackageReference Include="ppy.osu.Framework" Version="2026.318.0" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Elements\Pagoda\" />
-    </ItemGroup>
 </Project>
