@@ -2,24 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osuTK;
+using PamelloV7.Experiments.Game.Elements.Pagoda.Model;
 
 namespace PamelloV7.Experiments.Game.Elements.Pagoda;
 
 public partial class PagodaGear : CompositeDrawable
 {
+    public PagodaGearModel Model { get; }
+    
     private readonly Box _baseGearBox;
+    private readonly Container _gearContainer;
+
+    private Bindable<bool> _isHighlighted;
+    private Bindable<bool> _isSelected;
+    
+    public const float BaseHeight = 16;
     
     public const float BaseSize = 48;
     public const float LevelSize = 16;
     public const float LevelGrowth = 4;
-    
-    public const int MinSizeLevel = 1;
-    public const int MaxSizeLevel = 7;
 
     public static List<Colour4> LevelColors = [
         Colour4.FromHex("9b90bf"),
@@ -35,34 +43,65 @@ public partial class PagodaGear : CompositeDrawable
         c.Lighten(0.1f),
         c.Darken(0.1f)
     )).ToList();
+
+    public static EdgeEffectParameters EdgeEffectHighlighted = new() {
+        Type = EdgeEffectType.Glow,
+        Colour = Colour4.White.Opacity(0.5f),
+        Radius = 5,
+    };
+    public static EdgeEffectParameters EdgeEffectSelected = new() {
+        Type = EdgeEffectType.Shadow,
+        Colour = Colour4.Gold.Opacity(0.8f),
+        Radius = 5,
+    };
+    public static EdgeEffectParameters EdgeEffectDefault = new() {
+        Type = EdgeEffectType.Glow,
+        Colour = Colour4.White.Opacity(0.0f),
+    };
     
-    public int SizeLevel {
-        get; set {
-            if (field == value) return;
-            if (value < MinSizeLevel) value = MinSizeLevel;
-            if (value > MaxSizeLevel) value = MaxSizeLevel;
-            
-            field = value;
-            
-            _baseGearBox.Width = BaseSize + LevelSize * value + LevelGrowth * (value * value) / 2;
-            _baseGearBox.Colour = LevelColorInfos[value - 1];
-        }
-    }
-    
-    public PagodaGear() {
-        InternalChild = new Container {
+    public PagodaGear(PagodaGearModel model) {
+        Model = model;
+        
+        InternalChild = _gearContainer = new Container {
             AutoSizeAxes = Axes.Both,
+            
+            Masking = true,
+            EdgeEffect = EdgeEffectDefault,
 
             Child = _baseGearBox = new Box {
-                Size = new Vector2(0, 16),
+                Height = BaseHeight,
+                Width = GetLevelSize(Model.Level),
+                
+                Colour = LevelColorInfos[Model.Level - 1]
             }
         };
-        
-        SizeLevel = 1;
     }
+
+    public static float GetLevelSize(int level)
+        => BaseSize + LevelSize * level + LevelGrowth * (level * level) / 2;
 
     [BackgroundDependencyLoader]
     private void load() {
         AutoSizeAxes = Axes.Both;
+
+        _isHighlighted = Model.IsHighlighted.GetBoundCopy();
+        _isSelected = Model.IsSelected.GetBoundCopy();
+        
+        _isHighlighted.BindValueChanged(_ => UpdateVisuals());
+        _isSelected.BindValueChanged(_ => UpdateVisuals());
+        
+        UpdateVisuals();
+    }
+    
+    private void UpdateVisuals() {
+        if (_isSelected.Value) {
+            _gearContainer.TweenEdgeEffectTo(EdgeEffectSelected, 200, Easing.OutQuint);
+        }
+        else if (_isHighlighted.Value) {
+            _gearContainer.TweenEdgeEffectTo(EdgeEffectHighlighted, 200, Easing.OutQuint);
+        }
+        else {
+            _gearContainer.TweenEdgeEffectTo(EdgeEffectDefault, 200, Easing.OutQuint);
+        }
     }
 }
