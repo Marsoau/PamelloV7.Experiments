@@ -259,16 +259,7 @@ public partial class PagodaPillar : CompositeDrawable
         Width = PagodaGear.GetLevelSize(PagodaGearModel.MaxSizeLevel);
     }
 
-    protected override bool OnHover(HoverEvent e) {
-        Model.TopGear?.IsHighlighted.Value = true;
-        Console.WriteLine($"Hovered: {Model.TopGear?.IsHighlighted.Value}");
-        return base.OnHover(e);
-    }
-    protected override void OnHoverLost(HoverLostEvent e) {
-        Model.TopGear?.IsHighlighted.Value = false;
-        Console.WriteLine($"HoverLost: {Model.TopGear?.IsHighlighted.Value}");
-        base.OnHoverLost(e);
-    }
+    protected override bool OnHover(HoverEvent e) => false;
 
     public void HighlightChanged(ValueChangedEvent<bool> change) {
         _highlightContainer.ScaleTo(change.NewValue ? new Vector2(1, 1) : new Vector2(1, 0), 200, Easing.OutQuint);

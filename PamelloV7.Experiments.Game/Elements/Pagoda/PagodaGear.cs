@@ -8,6 +8,7 @@ using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
+using osu.Framework.Input.Events;
 using osuTK;
 using PamelloV7.Experiments.Game.Elements.Pagoda.Model;
 
@@ -20,8 +21,7 @@ public partial class PagodaGear : CompositeDrawable
     private readonly Box _baseGearBox;
     private readonly Container _gearContainer;
 
-    private Bindable<bool> _isHighlighted;
-    private Bindable<bool> _isSelected;
+    private Bindable<PagodaGearModel.PagodaGearState> _state;
     
     public const float BaseHeight = 16;
     
@@ -84,24 +84,28 @@ public partial class PagodaGear : CompositeDrawable
     private void load() {
         AutoSizeAxes = Axes.Both;
 
-        _isHighlighted = Model.IsHighlighted.GetBoundCopy();
-        _isSelected = Model.IsSelected.GetBoundCopy();
+        _state = Model.State.GetBoundCopy();
         
-        _isHighlighted.BindValueChanged(_ => UpdateVisuals());
-        _isSelected.BindValueChanged(_ => UpdateVisuals());
+        _state.BindValueChanged(_ => UpdateVisuals());
         
         UpdateVisuals();
     }
     
     private void UpdateVisuals() {
-        if (_isSelected.Value) {
-            _gearContainer.TweenEdgeEffectTo(EdgeEffectSelected, 200, Easing.OutQuint);
-        }
-        else if (_isHighlighted.Value) {
-            _gearContainer.TweenEdgeEffectTo(EdgeEffectHighlighted, 200, Easing.OutQuint);
-        }
-        else {
-            _gearContainer.TweenEdgeEffectTo(EdgeEffectDefault, 200, Easing.OutQuint);
+        switch (_state.Value) {
+            case PagodaGearModel.PagodaGearState.None:
+                _gearContainer.TweenEdgeEffectTo(EdgeEffectDefault, 200, Easing.OutQuint);
+                break;
+            case PagodaGearModel.PagodaGearState.Selected:
+                _gearContainer.TweenEdgeEffectTo(EdgeEffectSelected, 200, Easing.OutQuint);
+                break;
+            case PagodaGearModel.PagodaGearState.Highlighted:
+                _gearContainer.TweenEdgeEffectTo(EdgeEffectHighlighted, 200, Easing.OutQuint);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
+
+    protected override bool OnHover(HoverEvent e) => false;
 }
